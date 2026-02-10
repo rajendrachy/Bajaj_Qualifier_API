@@ -1,4 +1,5 @@
 require("dotenv").config();
+
 const express = require("express");
 const cors = require("cors");
 const axios = require("axios");
@@ -9,6 +10,7 @@ app.use(express.json());
 
 const EMAIL = process.env.OFFICIAL_EMAIL;
 
+// ---------- Utility Functions ----------
 
 function fibonacci(n) {
   if (n <= 0) return [];
@@ -42,6 +44,7 @@ function lcm(arr) {
   return arr.reduce((a, b) => (a * b) / gcd(a, b));
 }
 
+// ---------- Routes ----------
 
 app.get("/health", (req, res) => {
   res.status(200).json({
@@ -49,7 +52,6 @@ app.get("/health", (req, res) => {
     official_email: EMAIL,
   });
 });
-
 
 app.post("/bfhl", async (req, res) => {
   try {
@@ -60,8 +62,7 @@ app.post("/bfhl", async (req, res) => {
       });
     }
 
-    const body = req.body;
-    const keys = Object.keys(body);
+    const keys = Object.keys(req.body);
 
     if (keys.length !== 1) {
       return res.status(400).json({
@@ -75,35 +76,35 @@ app.post("/bfhl", async (req, res) => {
 
     switch (key) {
       case "fibonacci":
-        if (!Number.isInteger(body[key]) || body[key] < 0) {
+        if (!Number.isInteger(req.body[key]) || req.body[key] < 0) {
           throw new Error("Invalid fibonacci input");
         }
-        data = fibonacci(body[key]);
+        data = fibonacci(req.body[key]);
         break;
 
       case "prime":
-        if (!Array.isArray(body[key])) {
+        if (!Array.isArray(req.body[key])) {
           throw new Error("Prime expects an array");
         }
-        data = body[key].filter(isPrime);
+        data = req.body[key].filter(isPrime);
         break;
 
       case "lcm":
-        if (!Array.isArray(body[key])) {
+        if (!Array.isArray(req.body[key])) {
           throw new Error("LCM expects an array");
         }
-        data = lcm(body[key]);
+        data = lcm(req.body[key]);
         break;
 
       case "hcf":
-        if (!Array.isArray(body[key])) {
+        if (!Array.isArray(req.body[key])) {
           throw new Error("HCF expects an array");
         }
-        data = hcf(body[key]);
+        data = hcf(req.body[key]);
         break;
 
       case "AI":
-        if (typeof body[key] !== "string") {
+        if (typeof req.body[key] !== "string") {
           throw new Error("AI expects a string");
         }
 
@@ -112,7 +113,7 @@ app.post("/bfhl", async (req, res) => {
           {
             contents: [
               {
-                parts: [{ text: body[key] }],
+                parts: [{ text: req.body[key] }],
               },
             ],
           }
@@ -122,7 +123,6 @@ app.post("/bfhl", async (req, res) => {
           .replace(/[^a-zA-Z ]/g, "")
           .trim()
           .split(" ")[0];
-
         break;
 
       default:
@@ -142,6 +142,7 @@ app.post("/bfhl", async (req, res) => {
   }
 });
 
+// ---------- Server ----------
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
