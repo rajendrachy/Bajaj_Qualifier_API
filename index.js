@@ -9,7 +9,6 @@ app.use(express.json());
 
 const EMAIL = process.env.OFFICIAL_EMAIL;
 
-/* ------------------ Utility Functions ------------------ */
 
 function fibonacci(n) {
   if (n <= 0) return [];
@@ -43,7 +42,6 @@ function lcm(arr) {
   return arr.reduce((a, b) => (a * b) / gcd(a, b));
 }
 
-/* ------------------ Health API ------------------ */
 
 app.get("/health", (req, res) => {
   res.status(200).json({
@@ -52,11 +50,9 @@ app.get("/health", (req, res) => {
   });
 });
 
-/* ------------------ BFHL API ------------------ */
 
 app.post("/bfhl", async (req, res) => {
   try {
-    // ✅ Empty / invalid body check
     if (!req.body || typeof req.body !== "object") {
       return res.status(400).json({
         is_success: false,
@@ -67,7 +63,6 @@ app.post("/bfhl", async (req, res) => {
     const body = req.body;
     const keys = Object.keys(body);
 
-    // ✅ Exactly one key required
     if (keys.length !== 1) {
       return res.status(400).json({
         is_success: false,
@@ -123,7 +118,6 @@ app.post("/bfhl", async (req, res) => {
           }
         );
 
-        // ✅ Force single clean word
         data = geminiResponse.data.candidates[0].content.parts[0].text
           .replace(/[^a-zA-Z ]/g, "")
           .trim()
@@ -148,7 +142,6 @@ app.post("/bfhl", async (req, res) => {
   }
 });
 
-/* ------------------ Server ------------------ */
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
