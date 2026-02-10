@@ -1,2 +1,2 @@
-# Bajaj_Qualifier_API
-APi_gemini
+# Bajaj_Qualifier_API LInk :- https://bajaj-qualifier-api-1.onrender.com
+
